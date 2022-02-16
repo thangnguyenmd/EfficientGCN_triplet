@@ -1,0 +1,73 @@
+# Setting
+gpus: [0,1]
+seed: 1
+debug: False
+pretrained: checkpoints/02_16_2022_configs0001.yaml_epoch13_checkpoint.pth
+save_path: ./checkpoints
+no_progress_bar: False
+
+# Visualization
+visualization_class: 0
+visualization_sample: 0
+visualization_frames: []
+
+# Data Loader
+# ntu-xsub, ntu-xview, ntu-xsub120, ntu-xset120
+dataset: asilla
+dataset_args:
+  asilla:
+    embedding: 128
+    shape: [3, 4, 20, 14, 1]
+    train_batch_size: 8
+    eval_batch_size: 8
+    num_frame: 20
+    inputs: JVB
+    transform: False
+    train_data: data/20220106_VN_trimmed
+    val_data: data/secom
+
+# Model
+model_type: EfficientGCN-B0
+model_args:
+  stem_channel: 64
+  block_args: [[48,1,0.5],[24,1,0.5],[64,2,1],[128,2,1]]
+  fusion_stage: 2
+  act_type: swish
+  att_type: stja
+  layer_type: SG
+  drop_prob: 0.25
+  kernel_size: [5,2]
+  scale_args: [1.2,1.35]
+  expand_ratio: 0
+  reduct_ratio: 2
+  bias: True
+  edge: True
+
+# Optimizer
+# SGD, Adam
+epochs: 300
+val_scheduler: 1
+optimizer: Adam
+optimizer_args:
+  SGD:
+    lr: 0.1
+    momentum: 0.9
+    nesterov: True
+    weight_decay: 0.0001
+  Adam:
+    lr: 0.01
+    betas: [0.9,0.99]
+    weight_decay: 0.00001
+
+# Scheduler
+# step, cosine
+lr_scheduler: step
+scheduler_args:
+  warm_up: 10
+  step:
+    step_size: 20
+    gamma: 0.9
+  on_plateau:
+    factor: 0.1
+    patience: 5
+    threshold: 0.001
